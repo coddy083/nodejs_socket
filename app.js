@@ -17,6 +17,8 @@ io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
     console.log("message: " + msg);
   });
+  //send message to client
+  socket.emit("chat message", "Hello from server");
 });
 
 server.listen(4005, () => {
