@@ -2,8 +2,11 @@ version: '3.8'
 
 services:
   node:
-    image: node:14
+    build: .
     volumes:
       - .:/app
     working_dir: /app
+    ports:
+      - 4005:4005
     command: bash -c "npm install && node app.js"
+    restart: always
