@@ -8,5 +8,5 @@ services:
     working_dir: /app
     ports:
       - 4005:4005
-    command: bash -c "npm install && node app.js"
+    command: node app.js
     restart: always
