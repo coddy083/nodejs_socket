@@ -5,16 +5,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const helloWorld = async () => {
-  await console.log("Hello World");
-};
-
 app.get("/", (req, res) => {
   res.json({ message: "Hello World!" });
 });
 
 io.on("connection", (socket) => {
-  helloWorld();
   console.log("a user connected");
   socket.on("disconnect", () => {
     console.log("user disconnected");
