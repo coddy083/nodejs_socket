@@ -4,8 +4,8 @@ services:
   node:
     build: .
     volumes:
-      - .:/app
-    working_dir: /app
+      - .:/websocket_srv
+    working_dir: /websocket_srv
     ports:
       - 4005:4005
     command: node app.js
