@@ -103,11 +103,6 @@ chat.on("connection", (socket) => {
     console.log(message);
     chat.to(room).emit("message", message);
   });
-  socket.emit("message", (message) => {
-    console.log(message);
-    chat.emit("message", message);
-  }
-  );
 });
 
 
