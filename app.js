@@ -28,7 +28,7 @@ const UserDB = client.db("UserDB").collection("User");
 
 app.get("/", (req, res) => {
   // interval;
-  res.status(200).json({"msg" : "hello world"});
+  res.status(200).json({ msg: "hello world" });
 });
 
 app.get("/users", (req, res) => {
@@ -92,20 +92,16 @@ chat.on("connection", (socket) => {
   socket.on("join", (room) => {
     socket.join(room);
     console.log(`User joined ${room}`);
-  }
-  );
+  });
   socket.on("leave", (room) => {
     socket.leave(room);
     console.log(`User left ${room}`);
-  }
-  );
-  socket.on("message", (room, message) => {
+  });
+  socket.on("message", (message) => {
     console.log(message);
-    chat.to(room).emit("chat message", message);
+    chat.to(message.room).emit("message", message);
   });
 });
-
-
 
 // io.on("connection", (socket) => {
 //   console.log("a user connected");
