@@ -85,11 +85,10 @@ chat.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
-  socket.on("message", (message) => {
-    console.log(message);
-    chat.emit("message", message);
-  });
-  //room chat
+  // socket.on("message", (message) => {
+  //   console.log(message);
+  //   chat.emit("message", message);
+  // });
   socket.on("join", (room) => {
     socket.join(room);
     console.log(`User joined ${room}`);
