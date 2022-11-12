@@ -98,7 +98,7 @@ chat.on("connection", (socket) => {
     console.log(`User left ${room}`);
   });
   socket.on("message", (room, message) => {
-    chat.to(room).emit("message", message);
+    chat.in(room).emit("message", message);
   }
   );
 });
