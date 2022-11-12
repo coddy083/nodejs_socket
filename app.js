@@ -99,7 +99,9 @@ chat.on("connection", (socket) => {
   });
   socket.on("message", (room, message) => {
     console.log(message);
-    chat.to(room).emit("message", message);
+    // chat.to(room).emit("message", message);
+    // chat.in(room).emit("message", message);
+    chat.emit("message", message);
   }
   );
 });
