@@ -101,7 +101,7 @@ chat.on("connection", (socket) => {
     console.log(message);
     // chat.to(room).emit("message", message);
     // chat.in(room).emit("chat message", message);
-    chat.emit("message", message);
+    chat.emit("chat message", message);
   }
   );
 });
