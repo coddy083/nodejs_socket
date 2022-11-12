@@ -99,7 +99,7 @@ chat.on("connection", (socket) => {
   });
   socket.on("chat message", (room, message) => {
     console.log(message);
-    chat.in(room).emit("chat message", message);
+    socket.in(room).emit("chat message", message);
     // socket.broadcast.emit("chat message", message);
   }
   );
