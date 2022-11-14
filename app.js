@@ -116,14 +116,9 @@ chat.on("connection", (socket) => {
   });
   socket.on("chat message", (room, user, message) => {
     socket.in(room).emit("chat message", message, user, message);
-    const chatDoc = {
-      user: user,
-      msg: message,
-      time: new Date(),
-      room: room,
-    }
+    const chatDoc = { user, message, room, time: new Date() };
     chatSave(chatDoc);
-    // socket.broadcast.emit("chat message", message);
+    socket.emit("typing", false);
   }
   );
 });
