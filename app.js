@@ -86,8 +86,9 @@ app.delete("/users", bodyParser, (req, res) => {
 });
 
 app.get("/chatList" , (req, res) => {
+  const room = req.query.room;
   //last 20 chat reserved
-    chatDB.find({}).sort({_id:-1}).limit(20).toArray((err, result) => {
+    chatDB.find({room}).sort({_id:-1}).limit(20).toArray((err, result) => {
     if (err) throw err;
     result.reverse();
     res.status(200).json(result);
