@@ -16,11 +16,18 @@ const client = new MongoClient(uri, {
   serverApi: { version: ServerApiVersion.v1 },
 });
 client.connect((err) => {
-  const collection = client.db("UserDB").collection("User");
   // perform actions on the collection object
+  const UserDB = client.db("UserDB").collection("User");
+  const chatDB = client.db("UserDB").collection("Chat");
 });
 
 const UserDB = client.db("UserDB").collection("User");
+const chatDB = client.db("UserDB").collection("Chat");
+
+const chatSave = async (data) => {
+  console.log(data);
+  await chatDB.insertOne(data);
+}
 
 // const interval = setInterval(() =>{
 //   console.log("Hello World");
@@ -78,6 +85,13 @@ app.delete("/users", bodyParser, (req, res) => {
   });
 });
 
+app.get("/chatList" , (req, res) => {
+  chatDB.find({}).toArray((err, result) => {
+    if (err) throw err;
+    res.status(200).json(result);
+  });
+});
+
 const chat = io.of("/chat");
 
 chat.on("connection", (socket) => {
@@ -97,9 +111,15 @@ chat.on("connection", (socket) => {
     socket.leave(room);
     console.log(`User left ${room}`);
   });
-  socket.on("chat message", (room, message) => {
-    console.log(message);
-    socket.in(room).emit("chat message", message);
+  socket.on("chat message", (room, user, message) => {
+    socket.in(room).emit("chat message", message, user, message);
+    const chatDoc = {
+      user: user,
+      msg: message,
+      time: new Date(),
+      room: room,
+    }
+    chatSave(chatDoc);
     // socket.broadcast.emit("chat message", message);
   }
   );
