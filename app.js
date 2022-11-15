@@ -22,17 +22,17 @@ client.connect((err) => {
   const chatDB = client.db("UserDB").collection("Chat");
 });
 
+// const interval = setInterval(() =>{
+//   console.log("Hello World");
+// }, 2000);
+
 const UserDB = client.db("UserDB").collection("User");
 const chatDB = client.db("UserDB").collection("Chat");
 
 const chatSave = async (data) => {
-  console.log(data);
   await chatDB.insertOne(data);
 }
 
-// const interval = setInterval(() =>{
-//   console.log("Hello World");
-// }, 2000);
 
 app.get("/", (req, res) => {
   // interval;
@@ -99,58 +99,31 @@ app.get("/chatList" , (req, res) => {
 const chat = io.of("/chat");
 
 chat.on("connection", (socket) => {
-  console.log("User connected");
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
-  // socket.on("message", (message) => {
-  //   console.log(message);
-  //   chat.emit("message", message);
-  // });
   socket.on("join", (room, user) => {
     socket.join(room);
-    users.push({ room: room, user: user });
-    console.log(users)
+    users.push({
+      room: room,
+      user: user,
+    });
+    socket.broadcast.emit("join users", users);
+    console.log(`${user} has joined the room`);
+    console.log(users);
   });
   socket.on("leave", (room, user) => {
     socket.leave(room)
     users.splice(users.findIndex((item) => item.user === user), 1);
-    console.log(users);
     console.log(`User left ${room}`);
+    console.log(users);
   });
   socket.on("chat message", (room, user, message) => {
-    socket.in(room).emit("chat message", room, user, message);
+    socket.in(room).emit("chat message", room, user, message, users);
     const chatDoc = { user, message, room, time: new Date() };
     chatSave(chatDoc);
-    socket.emit("typing", false);
-    
-
-    
-
-
-    
-
-  }
-  );
+  });
 });
-
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-//   socket.on("chat message", (msg) => {
-//     console.log("chat message: " + msg);
-//     socket.broadcast.emit("chat message", msg);
-//   });
-//   socket.on("Welcome", (msg) => {
-//     console.log("Welcome: " + msg);
-//     socket.broadcast.emit("Welcome", msg);
-//   });
-//   socket.on("typing", (data) => {
-//     socket.broadcast.emit("typing", data);
-//   });
-// });
 
 server.listen(port, () => {
   console.log(`서버시작 포트${port}`);
