@@ -8,6 +8,7 @@ const io = new Server(server);
 const { ObjectId } = require("mongodb");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const bodyParser = require("body-parser").json();
+const users = [];
 const uri =
   "mongodb+srv://user:10041004@cluster0.avef3.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
@@ -106,19 +107,29 @@ chat.on("connection", (socket) => {
   //   console.log(message);
   //   chat.emit("message", message);
   // });
-  socket.on("join", (room) => {
+  socket.on("join", (room, user) => {
     socket.join(room);
-    console.log(`User joined ${room}`);
+    users.push({ room: room, user: user });
+    console.log(users)
   });
-  socket.on("leave", (room) => {
-    socket.leave(room);
+  socket.on("leave", (room, user) => {
+    socket.leave(room)
+    users.splice(users.findIndex((item) => item.user === user), 1);
+    console.log(users);
     console.log(`User left ${room}`);
   });
   socket.on("chat message", (room, user, message) => {
-    socket.in(room).emit("chat message", message, user, message);
+    socket.in(room).emit("chat message", room, user, message);
     const chatDoc = { user, message, room, time: new Date() };
     chatSave(chatDoc);
     socket.emit("typing", false);
+    
+
+    
+
+
+    
+
   }
   );
 });
