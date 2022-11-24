@@ -61,10 +61,10 @@ chat.on("connection", (socket) => {
     console.log(`User left ${room}`);
     console.log(users);
   });
-  socket.on("chat message", (room, user, message) => {
+  socket.on("chat message", (room, user, userName, message) => {
     socket.in(room).emit("chat message", room, user, message, users);
     console.log(message);
-    const chatDoc = { user, message, room, time: new Date() };
+    const chatDoc = { user, message, room, userName, time: new Date() };
     chatSave(chatDoc);
   });
 });
