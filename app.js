@@ -1,95 +1,38 @@
 const { Server } = require("socket.io");
+const { ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const express = require("express");
 const http = require("http");
 const app = express();
-const port = process.env.PORT || 4005;
+const port = process.env.PORT || 8008;
 const server = http.createServer(app);
 const io = new Server(server);
-const { ObjectId } = require("mongodb");
-const { MongoClient, ServerApiVersion } = require("mongodb");
 const bodyParser = require("body-parser").json();
 const users = [];
-const uri =
-  "mongodb+srv://user:10041004@cluster0.avef3.mongodb.net/?retryWrites=true&w=majority";
+const mongoDBuri = require("./secure.json");
+const uri = mongoDBuri['mongodbURI']
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: { version: ServerApiVersion.v1 },
 });
 client.connect((err) => {
-  // perform actions on the collection object
-  const UserDB = client.db("UserDB").collection("User");
-  const chatDB = client.db("UserDB").collection("Chat");
+  const chatDB = client.db("moa_gudok").collection("chat");
 });
 
-// const interval = setInterval(() =>{
-//   console.log("Hello World");
-// }, 2000);
-
-const UserDB = client.db("UserDB").collection("User");
-const chatDB = client.db("UserDB").collection("Chat");
+const chatDB = client.db("moa_gudok").collection("chat");
 
 const chatSave = async (data) => {
   await chatDB.insertOne(data);
 }
 
-
 app.get("/", (req, res) => {
-  // interval;
-  res.status(200).json({ msg: "hello world" });
+  res.status(200).json({ msg: "Server Moa Gudok Chat Server" });
 });
 
-app.get("/users", (req, res) => {
-  UserDB.find({}).toArray((err, result) => {
-    if (err) throw err;
-    res.status(200).json(result);
-  });
-});
-
-app.get("/users", async (req, res) => {
-  req.query.id
-    ? await UserDB.findOne({ _id: ObjectId(req.query.id) }, (err, result) => {
-        if (err) throw err;
-        res.status(200).json(result);
-      })
-    : await UserDB.find({}).toArray((err, result) => {
-        if (err) throw err;
-        res.status(200).json(result);
-      });
-});
-
-app.post("/users", bodyParser, (req, res) => {
-  const { name, age } = req.body;
-  UserDB.insertOne({ name, age }, (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result);
-  });
-});
-
-app.put("/users", bodyParser, (req, res) => {
-  const { id, name, age } = req.body;
-  UserDB.updateOne(
-    { _id: ObjectId(id) },
-    { $set: { name, age } },
-    (err, result) => {
-      if (err) throw err;
-      res.status(200).json(result);
-    }
-  );
-});
-
-app.delete("/users", bodyParser, (req, res) => {
-  const { id } = req.body;
-  UserDB.deleteOne({ _id: ObjectId(id) }, (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result);
-  });
-});
-
-app.get("/chatList" , (req, res) => {
-  const {room} = req.query;
-  //last 20 chat reserved
-    chatDB.find({room}).sort({_id:-1}).limit(20).toArray((err, result) => {
+app.get("/chatList", (req, res) => {
+  const { room } = req.query;
+  chatDB.find({ room }).sort({ _id: -1 }).limit(20).toArray((err, result) => {
     if (err) throw err;
     result.reverse();
     res.status(200).json(result);
@@ -120,6 +63,7 @@ chat.on("connection", (socket) => {
   });
   socket.on("chat message", (room, user, message) => {
     socket.in(room).emit("chat message", room, user, message, users);
+    console.log(message);
     const chatDoc = { user, message, room, time: new Date() };
     chatSave(chatDoc);
   });
