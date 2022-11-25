@@ -12,23 +12,18 @@ services:
     restart: always
 
   mongo:
-    image: mongo_express
+    image: mongo-express
     restart: always
     ports:
-      - 27017:27017
+      - 8081:8081
     volumes:
       - ./data/db:/data/db
       - ./data/configdb:/data/configdb
     environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=123456
-      - DB_USERNAME=admin
-      - DB_PASSWORD=123456
-      - DB_NAME=chat
-      - DB_HOST=mongo
-      - DB_PORT=27017
+      ADMINUSERNAME: root
+      ADMINPASSWORD: example
     depends_on:
-      - mongo
       - node
+
 
 
