@@ -1,4 +1,4 @@
-FROM node:12.22.9-alpine3.14
+FROM node:14.15.4-alpine3.12
 
 # Create app directory
 RUN mkdir -p /websocket_srv
