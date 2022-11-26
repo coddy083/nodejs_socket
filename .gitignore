@@ -1,4 +1,5 @@
 node_modules/
+mongodb/
 .expo/
 dist/
 npm-debug.*

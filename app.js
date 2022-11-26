@@ -1,42 +1,74 @@
 const { Server } = require("socket.io");
-const { ObjectId } = require("mongodb");
-const { MongoClient, ServerApiVersion } = require("mongodb");
 const express = require("express");
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
+const uri = 'mongodb://root:1234@mongodb:27017';
 const http = require("http");
 const app = express();
 const port = process.env.PORT || 8008;
 const server = http.createServer(app);
 const io = new Server(server);
-const bodyParser = require("body-parser").json();
 const users = [];
-const mongoDBuri = require("./secure.json");
-const uri = mongoDBuri['mongodbURI']
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: { version: ServerApiVersion.v1 },
-});
-client.connect((err) => {
-  const chatDB = client.db("moa_gudok").collection("chat");
+
+server.listen(port, () => {
+  console.log(`서버시작 포트는 ${port}`);
 });
 
-const chatDB = client.db("moa_gudok").collection("chat");
+// 몽구스 연결
+const mongoose = require("mongoose");
+mongoose.connect(uri,{
+      // useNewUrlPaser: true,
+      // useUnifiedTofology: true,
+      // useCreateIndex: true,
+      // useFindAndModify: false,
+    }
+  )
+  .then(() => console.log('***** MongoDB conected *****'))
+  .catch((err) => {
+    console.log(err);
+  });
 
-const chatSave = async (data) => {
-  await chatDB.insertOne(data);
-}
+// 스키마 생성
+const Schema = mongoose.Schema;
+const chatMessage = new Schema({
+  user: String,
+  room: String,
+  userName: String,
+  message: String,
+  time: Date,
+});
 
-app.get("/", (req, res) => {
+// 모델 생성
+const Chat = mongoose.model('Chat', chatMessage);
+
+// 데이터 생성
+async function chatSave(chatDoc) {
+  const chatmsg = new Chat(chatDoc);
+  chatmsg.save((err, result) => {
+    if (err) throw err;
+    console.log(result);
+  });
+};
+// 몽구스 종료
+
+app.get("/", async (req, res) => {
+  chatSave({
+    user: "test",
+    room: "room1",
+    userName: "test",
+    message: "test",
+    time: new Date()
+  });
   res.status(200).json({ msg: "Server Moa Gudok Chat Server" });
 });
 
 app.get("/chatList", (req, res) => {
-  const { room } = req.query;
-  chatDB.find({ room }).sort({ _id: -1 }).limit(20).toArray((err, result) => {
+  const room = req.query.room;
+  Chat.find({ room: room }, (err, result) => {
     if (err) throw err;
-    result.reverse();
     res.status(200).json(result);
-  });
+  }
+  );
 });
 
 const chat = io.of("/chat");
@@ -63,12 +95,14 @@ chat.on("connection", (socket) => {
   });
   socket.on("chat message", (room, user, userName, message) => {
     socket.in(room).emit("chat message", room, user, message, users);
-    console.log(message);
-    const chatDoc = { user, message, room, userName, time: new Date() };
+    console.log(user, room, userName, message);
+    const chatDoc = {
+      user: user,
+      room: room,
+      userName: userName,
+      message: message,
+      time: new Date().toDateString()
+    };
     chatSave(chatDoc);
   });
-});
-
-server.listen(port, () => {
-  console.log(`서버시작 포트${port}`);
 });

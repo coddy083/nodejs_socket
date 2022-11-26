@@ -7,23 +7,21 @@ services:
       - .:/websocket_srv
     working_dir: /websocket_srv
     ports:
-      - 4005:4005
+      - 8008:8008
     command: node app.js
     restart: always
 
-  mongo:
-    image: mongo-express
+  mongodb:
+    image: mongo
+    container_name: mongodb
     restart: always
     ports:
-      - 8081:8081
+      - 27017:27017      
     volumes:
-      - ./data/db:/data/db
-      - ./data/configdb:/data/configdb
+      - ./mongodb:/data/db
     environment:
-      ADMINUSERNAME: root
-      ADMINPASSWORD: example
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234 
+      - MONGO_INITDB_DATABASE=mydb
     depends_on:
       - node
-
-
-
