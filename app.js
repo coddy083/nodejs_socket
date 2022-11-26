@@ -50,13 +50,6 @@ async function chatSave(chatDoc) {
 // 몽구스 종료
 
 app.get("/", async (req, res) => {
-  chatSave({
-    user: "test",
-    room: "room1",
-    userName: "test",
-    message: "test",
-    time: new Date()
-  });
   res.status(200).json({ msg: "Server Moa Gudok Chat Server" });
 });
 
@@ -99,7 +92,7 @@ chat.on("connection", (socket) => {
       room: room,
       userName: userName,
       message: message,
-      time: new Date().toDateString()
+      time: new Date(),
     };
     chatSave(chatDoc);
   });
