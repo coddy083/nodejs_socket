@@ -1,6 +1,5 @@
 const { Server } = require("socket.io");
 const express = require("express");
-const MongoClient = mongodb.MongoClient;
 const uri = 'mongodb://root:1234@mongodb:27017';
 const http = require("http");
 const app = express();
