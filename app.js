@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { hello } from './hello.js';
-import { chatSave, Chat } from './serializer.js';
+import { chatSave, roomSave, Chat, Room, findRoom } from './serializer.js';
 import express from 'express';
 import http from 'http';
 const app = express();
@@ -23,6 +23,13 @@ app.get("/", async (req, res) => {
   });
   res.status(200).json({ msg: hello() });
 });
+
+app.get("/roomsave", async (req, res) => {
+  const room = req.query.room;
+  findRoom(room);
+  res.status(200).json({ msg: hello() });
+});
+
 
 app.get("/chatList", (req, res) => {
   const room = req.query.room;
@@ -55,9 +62,15 @@ chat.on("connection", (socket) => {
     console.log(`User left ${room}`);
     console.log(users);
   });
-  socket.on("chat message", (room, user, userName, message) => {
+  socket.on("chat message", async (room, user, userName, message, seller) => {
     socket.in(room).emit("chat message", room, user, message, users);
-    console.log(user, room, userName, message);
+    const roomList = await findRoom(room);
+    if(roomList.length == 0) {
+      roomSave({
+        sellerId: seller,
+        room: room,
+      });
+    }
     const chatDoc = {
       user: user,
       room: room,
