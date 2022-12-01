@@ -2,6 +2,7 @@ FROM node:19-alpine3.15
 
 # Create app directory
 RUN mkdir -p /ChattingService
+COPY package.json /ChattingService/
 WORKDIR /ChattingService
 
 # Install app dependencies
