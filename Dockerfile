@@ -6,6 +6,7 @@ WORKDIR /ChattingService
 
 # Install app dependencies
 COPY package.json /ChattingService
+RUN npm install -g npm@9.1.3
 RUN npm install
 RUN npm install -g socket.io
 COPY . /ChattingService
