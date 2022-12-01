@@ -30,8 +30,15 @@ app.get("/roomsave", async (req, res) => {
   res.status(200).json({ msg: hello() });
 });
 
+app.get("/roomlist", async (req, res) => {
+  const room = req.query.room;
+  const roomList = await Room.find({
+    room: room,
+  });
+  res.status(200).json({ msg: roomList });
+});
 
-app.get("/chatList", (req, res) => {
+app.get("/chatlist", (req, res) => {
   const room = req.query.room;
   Chat.find({ room: room }, (err, result) => {
     if (err) throw err;
