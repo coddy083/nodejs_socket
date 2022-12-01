@@ -9,6 +9,7 @@ RUN npm install -g npm@9.1.3
 RUN npm install socket.io --save
 RUN npm install mongoose --save
 RUN npm install express --save
+RUN npm install -g npm@9.1.3
 COPY . /ChattingService
 RUN npm link socket.io
 
