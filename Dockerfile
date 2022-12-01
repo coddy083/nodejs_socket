@@ -9,7 +9,7 @@ COPY package.json /ChattingService
 RUN npm install
 COPY . /ChattingService
 RUN npm link socket.io
-RUN /bin/sh -c apt-get install socket.io
+RUN sudo apt-get install socket.io
 
 # Bundle app source
 
