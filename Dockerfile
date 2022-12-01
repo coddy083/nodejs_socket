@@ -5,12 +5,12 @@ RUN mkdir -p /ChattingService
 WORKDIR /ChattingService
 
 # Install app dependencies
+COPY . /ChattingService
 COPY package.json /ChattingService
 RUN npm install
 RUN npm link socket.io
 
 # Bundle app source
-COPY . /ChattingService
 
 EXPOSE 8008
 CMD [ "node" , "app.js" ]
