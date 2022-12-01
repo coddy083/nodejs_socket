@@ -5,7 +5,7 @@ RUN mkdir -p /websocket_srv
 WORKDIR /websocket_srv
 
 # Install app dependencies
-COPY package.json /websocket_srv
+COPY ChattingService/package.json /websocket_srv
 RUN npm install
 
 # Bundle app source
