@@ -1,15 +1,15 @@
 FROM node:14.15.4-alpine3.12
 
 # Create app directory
-RUN mkdir -p /websocket_srv
+RUN mkdir -p /ChattingService
 WORKDIR /websocket_srv
 
 # Install app dependencies
-COPY /ChattingService/package.json /websocket_srv
+COPY package.json /ChattingService
 RUN npm install
 
 # Bundle app source
-COPY . /websocket_srv
+COPY . /ChattingService
 
 EXPOSE 8008
 CMD [ "node" , "app.js" ]
