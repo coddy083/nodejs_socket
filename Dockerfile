@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:19-alpine3.15
 
 # Create app directory
 RUN mkdir -p /ChattingService
