@@ -5,10 +5,10 @@ RUN mkdir -p /ChattingService
 WORKDIR /ChattingService
 
 # Install app dependencies
-COPY package.json /ChattingService
 RUN npm install -g npm@9.1.3
-RUN npm install
-RUN npm install --production --save socket.io
+RUN npm install socket.io --save
+RUN npm install mongoose --save
+RUN npm install express --save
 COPY . /ChattingService
 RUN npm link socket.io
 
