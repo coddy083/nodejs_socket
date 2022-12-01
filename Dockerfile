@@ -11,5 +11,5 @@ RUN npm install
 # Bundle app source
 COPY . /websocket_srv
 
-EXPOSE 4005
+EXPOSE 8008
 CMD [ "node" , "app.js" ]
