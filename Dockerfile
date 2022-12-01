@@ -15,4 +15,3 @@ RUN npm link socket.io
 # Bundle app source
 RUN ls -al
 EXPOSE 8008
-CMD [ "node" , "app.js" ]
