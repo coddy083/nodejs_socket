@@ -8,7 +8,7 @@ WORKDIR /ChattingService
 COPY package.json /ChattingService
 RUN npm install -g npm@9.1.3
 RUN npm install
-RUN npm install socket.io --save
+RUN npm install --production --save socket.io
 COPY . /ChattingService
 RUN npm link socket.io
 
