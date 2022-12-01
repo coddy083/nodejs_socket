@@ -9,9 +9,9 @@ COPY package.json /ChattingService
 RUN npm install
 RUN npm install -g socket.io
 COPY . /ChattingService
-# RUN npm link socket.io
+RUN npm link socket.io
 
 # Bundle app source
-
+RUN ls -al
 EXPOSE 8008
 CMD [ "node" , "app.js" ]
